@@ -1,9 +1,7 @@
 export class Router {
-
   router = {}
-
-  add(routerName, page) {
-    this.router[routerName] = page
+  add(routeName, page) {
+    this.router[routeName] = page
   }
 
   route(event) {
@@ -11,10 +9,17 @@ export class Router {
     event.preventDefault()
 
     window.history.pushState({}, "", event.target.href)
+
+    this.handle()
   }
 
-
+  handle() {
+    const { pathname } = window.location
+    const route = this.router[pathname] || this.router[404]
+    fetch(route)
+      .then(data => data.text())
+      .then(html => {
+        document.getElementById('app').innerHTML = html
+      })
+  }
 }
-
-
-
